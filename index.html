@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Meal Planner: busca recetas por ingrediente en TheMealDB y organiza tu plan semanal de comidas.">
+  <meta name="author" content="Osorio Blancas José Carlos, Marcelo Valer Alessandro Percy">
+  <title>Meal Planner — Planificador semanal de comidas</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%9C%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <a class="salto-contenido" href="#formBusqueda">Saltar al buscador de recetas</a>
+
+  <header class="cabecera">
+    <div class="contenedor cabecera__contenido">
+      <p class="cabecera__kicker">Ejercicio integrador 4 · DOM + Fetch + Promesas + Callbacks</p>
+      <h1 class="cabecera__titulo">Meal&nbsp;Planner</h1>
+      <p class="cabecera__subtitulo">Planificador semanal de comidas</p>
+      <p class="cabecera__descripcion">
+        Escribe un ingrediente, descubre recetas reales de <strong>TheMealDB</strong> y organízalas
+        en tu menú de lunes a domingo.
+      </p>
+    </div>
+  </header>
+
+  <main class="contenedor principal">
+
+    <!-- ============ 1. BUSCADOR (RF01) ============ -->
+    <section class="panel" id="panelBusqueda" aria-labelledby="tituloBusqueda">
+      <header class="panel__encabezado">
+        <h2 class="panel__titulo" id="tituloBusqueda">
+          <span class="panel__numero">1</span> Buscar recetas por ingrediente
+        </h2>
+      </header>
+
+      <form class="buscador" id="formBusqueda" novalidate>
+        <div class="buscador__campo">
+          <label class="etiqueta" for="inputIngrediente">Ingrediente</label>
+          <input
+            class="entrada"
+            id="inputIngrediente"
+            name="ingrediente"
+            type="search"
+            placeholder="Ej.: chicken, egg, beef, rice…"
+            autocomplete="off"
+            maxlength="40"
+            aria-describedby="ayudaBuscador">
+        </div>
+        <button class="boton boton--primario boton--grande" id="btnBuscar" type="submit">
+          <span class="boton__texto">Buscar recetas</span>
+        </button>
+        <p class="buscador__ayuda" id="ayudaBuscador">
+          La búsqueda se realiza en <code>themealdb.com</code> mediante <code>fetch()</code>.
+        </p>
+      </form>
+
+      <div class="sugerencias">
+        <span class="sugerencias__titulo">Prueba con:</span>
+        <ul class="chips" id="chipsSugeridos">
+          <li><button class="chip" type="button" data-ingrediente="chicken">chicken</button></li>
+          <li><button class="chip" type="button" data-ingrediente="beef">beef</button></li>
+          <li><button class="chip" type="button" data-ingrediente="egg">egg</button></li>
+          <li><button class="chip" type="button" data-ingrediente="salmon">salmon</button></li>
+          <li><button class="chip" type="button" data-ingrediente="rice">rice</button></li>
+          <li><button class="chip" type="button" data-ingrediente="cheese">cheese</button></li>
+          <li><button class="chip" type="button" data-ingrediente="banana">banana</button></li>
+          <li><button class="chip" type="button" data-ingrediente="onion">onion</button></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 2. RESULTADOS / ESTADOS UI (RF02, RF03) ============ -->
+    <section class="panel" id="panelResultados" aria-labelledby="tituloResultados" data-estado="inicial">
+      <header class="panel__encabezado">
+        <h2 class="panel__titulo" id="tituloResultados">
+          <span class="panel__numero">2</span> Resultados de la búsqueda
+        </h2>
+        <p class="panel__contexto" id="contextoResultados" aria-live="polite" hidden></p>
+      </header>
+
+      <div class="estados" id="estados" role="status" aria-live="polite">
+
+        <!-- Estado: inicial -->
+        <div class="estado estado--inicial" data-estado="inicial">
+          <p class="estado__icono" aria-hidden="true">🍳</p>
+          <p class="estado__titulo">Aún no has buscado nada</p>
+          <p class="estado__texto">Escribe un ingrediente arriba y presiona <strong>Buscar recetas</strong>.</p>
+        </div>
+
+        <!-- Estado: cargando -->
+        <div class="estado estado--cargando" data-estado="cargando" hidden>
+          <p class="estado__titulo">Buscando recetas…</p>
+          <p class="estado__texto">Estamos consultando TheMealDB.</p>
+          <ul class="esqueletos" aria-hidden="true">
+            <li class="esqueleto"></li><li class="esqueleto"></li><li class="esqueleto"></li>
+            <li class="esqueleto"></li><li class="esqueleto"></li><li class="esqueleto"></li>
+          </ul>
+        </div>
+
+        <!-- Estado: vacío (consulta sin resultados) -->
+        <div class="estado estado--vacio" data-estado="vacio" hidden>
+          <p class="estado__icono" aria-hidden="true">🍽️</p>
+          <p class="estado__titulo">Sin resultados</p>
+          <p class="estado__texto" id="mensajeVacio"></p>
+          <p class="estado__pista">Prueba con otro ingrediente, por ejemplo <em>chicken</em>, <em>beef</em> o <em>egg</em>.</p>
+        </div>
+
+        <!-- Estado: error -->
+        <div class="estado estado--error" data-estado="error" hidden>
+          <p class="estado__icono" aria-hidden="true">⚠️</p>
+          <p class="estado__titulo">No pudimos consultar la API</p>
+          <p class="estado__texto" id="mensajeError"></p>
+          <button class="boton boton--secundario" id="btnReintentar" type="button">Reintentar búsqueda</button>
+        </div>
+
+      </div>
+
+      <!-- Lista de recetas (se inyecta desde js/app.js) -->
+      <ul class="grid-recetas" id="gridResultados" aria-label="Recetas encontradas" hidden></ul>
+    </section>
+
+    <!-- ============ 3. RECETA SELECCIONADA (RF04, RF05) ============ -->
+    <section class="panel" id="panelSeleccion" aria-labelledby="tituloSeleccion" hidden>
+      <header class="panel__encabezado">
+        <h2 class="panel__titulo" id="tituloSeleccion">
+          <span class="panel__numero">3</span> Receta seleccionada
+        </h2>
+      </header>
+
+      <div class="seleccion" id="seleccionActual"></div>
+
+      <form class="agregar" id="formAgregar" novalidate>
+        <div class="agregar__campo">
+          <label class="etiqueta" for="selectDia">Día de la semana</label>
+          <select class="entrada entrada--select" id="selectDia" name="dia"></select>
+        </div>
+        <button class="boton boton--primario" id="btnAgregar" type="submit">Agregar al plan</button>
+        <button class="boton boton--fantasma" id="btnCancelarSeleccion" type="button">Cancelar selección</button>
+      </form>
+    </section>
+
+    <!-- ============ 4. MENÚ SEMANAL (RF06, RF07) ============ -->
+    <section class="panel" id="panelPlan" aria-labelledby="tituloPlan">
+      <header class="panel__encabezado">
+        <h2 class="panel__titulo" id="tituloPlan">
+          <span class="panel__numero">4</span> Menú semanal
+        </h2>
+        <div class="panel__acciones">
+          <p class="contador" id="contadorPlan">0 recetas · 0 días con recetas</p>
+          <button class="boton boton--peligro" id="btnVaciarPlan" type="button" disabled>Vaciar plan</button>
+        </div>
+      </header>
+
+      <div class="plan" id="planSemanal" aria-label="Plan semanal de comidas"></div>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p><strong>Meal Planner</strong> · Ejercicio integrador 4</p>
+      <p>Integrantes: Osorio Blancas José Carlos (100%) · Marcelo Valer Alessandro Percy (100%)</p>
+      <p>Datos provistos por <a href="https://www.themealdb.com/api.php" target="_blank" rel="noopener noreferrer">TheMealDB</a> (API pública, sin autenticación).</p>
+    </div>
+  </footer>
+
+  <!-- ============ MODAL DE DETALLE DE RECETA ============ -->
+  <div class="modal" id="modalDetalle" role="dialog" aria-modal="true" aria-labelledby="tituloModal" hidden>
+    <div class="modal__caja">
+      <header class="modal__encabezado">
+        <h3 class="modal__titulo" id="tituloModal">Detalle de la receta</h3>
+        <button class="modal__cerrar" id="btnCerrarModal" type="button" aria-label="Cerrar detalle">✕</button>
+      </header>
+
+      <div class="modal__cuerpo" id="cuerpoModal"></div>
+
+      <footer class="modal__pie">
+        <div class="modal__pie-campo">
+          <label class="etiqueta" for="modalDia">Añadir al día</label>
+          <select class="entrada entrada--select" id="modalDia"></select>
+        </div>
+        <button class="boton boton--primario" id="btnModalAgregar" type="button">Agregar al plan</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ============ NOTIFICACIONES (callbacks) ============ -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/planner.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
