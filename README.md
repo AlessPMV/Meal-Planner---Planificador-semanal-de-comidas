@@ -25,7 +25,7 @@ Aplicar de forma integrada DOM, eventos, funciones JavaScript, callbacks, Promes
 
 ## 4.4 Funcionalidades principales
 
-* Buscar recetas por ingrediente.
+* Buscar recetas por ingrediente (en español o en inglés).
 * Mostrar nombre, categoría e imagen.
 * Visualizar información básica de una receta.
 * Agregar una receta a un día de la semana.
@@ -116,4 +116,6 @@ meal-planner/
 
 Meal Planner es una aplicación web de una sola página que permite buscar recetas por ingrediente y organizar un menú semanal. El usuario escribe un ingrediente y la aplicación consulta la API de TheMealDB con `fetch`; mientras espera se muestra el estado de carga y, al terminar, las recetas encontradas en tarjetas con su nombre, categoría, área de origen e imagen, desde donde se puede abrir el detalle con ingredientes e instrucciones. Después se selecciona una receta, se elige el día de la semana correspondiente y se agrega al plan, que luego puede editarse quitando recetas o vaciándose por completo, y se conserva aunque se recargue la página.
 
-El proyecto se organiza en tres archivos JavaScript: `api.js` realiza las consultas a la API y maneja los errores, `planner.js` guarda el plan semanal y notifica cada cambio, y `app.js` gestiona los eventos del usuario y la actualización del DOM para mostrar los resultados, los estados de la interfaz y el menú semanal.
+La búsqueda acepta el ingrediente **en español o en inglés**. Como TheMealDB solo reconoce nombres de ingrediente en inglés y con el nombre exacto de su base de datos, `api.js` incluye un diccionario de 345 términos en español que se traducen al nombre oficial en inglés (por ejemplo, *pollo* → `chicken`, *carne de res* → `beef`, *papas* → `potatoes`) y valida cada término contra el catálogo de ingredientes que publica la propia API. La resolución de una búsqueda es una cadena de tres pasos: (1) se prueban los candidatos en inglés contra `filter.php?i=`; (2) si ninguno devuelve recetas, se busca el término tal como lo escribió la persona usuaria en `search.php?s=`, que busca por nombre de receta y también encuentra recetas con nombre en español; (3) si tampoco hay coincidencias, se rechazan las sugerencias «¿quizás quisiste decir?» calculadas por distancia de edición contra el catálogo de ingredientes, que se descarga una sola vez y se guarda en `localStorage`.
+
+El proyecto se organiza en tres archivos JavaScript: `api.js` realiza las consultas a la API, traduce el término de búsqueda y maneja los errores, `planner.js` guarda el plan semanal y notifica cada cambio, y `app.js` gestiona los eventos del usuario y la actualización del DOM para mostrar los resultados, los estados de la interfaz y el menú semanal.

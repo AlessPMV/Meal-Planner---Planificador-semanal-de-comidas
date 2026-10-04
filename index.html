@@ -43,7 +43,7 @@
             id="inputIngrediente"
             name="ingrediente"
             type="search"
-            placeholder="Ej.: chicken, egg, beef, rice…"
+            placeholder="Ej.: pollo, chicken, huevo, egg…"
             autocomplete="off"
             maxlength="40"
             aria-describedby="ayudaBuscador">
@@ -52,21 +52,22 @@
           <span class="boton__texto">Buscar recetas</span>
         </button>
         <p class="buscador__ayuda" id="ayudaBuscador">
-          La búsqueda se realiza en <code>themealdb.com</code> mediante <code>fetch()</code>.
+          El buscador acepta el ingrediente en <strong>español o inglés</strong>: los términos en
+          español se traducen al nombre que usa TheMealDB.
         </p>
       </form>
 
       <div class="sugerencias">
         <span class="sugerencias__titulo">Prueba con:</span>
         <ul class="chips" id="chipsSugeridos">
+          <li><button class="chip" type="button" data-ingrediente="pollo">pollo</button></li>
           <li><button class="chip" type="button" data-ingrediente="chicken">chicken</button></li>
-          <li><button class="chip" type="button" data-ingrediente="beef">beef</button></li>
+          <li><button class="chip" type="button" data-ingrediente="huevo">huevo</button></li>
           <li><button class="chip" type="button" data-ingrediente="egg">egg</button></li>
+          <li><button class="chip" type="button" data-ingrediente="carne de res">carne de res</button></li>
+          <li><button class="chip" type="button" data-ingrediente="beef">beef</button></li>
+          <li><button class="chip" type="button" data-ingrediente="arroz">arroz</button></li>
           <li><button class="chip" type="button" data-ingrediente="salmon">salmon</button></li>
-          <li><button class="chip" type="button" data-ingrediente="rice">rice</button></li>
-          <li><button class="chip" type="button" data-ingrediente="cheese">cheese</button></li>
-          <li><button class="chip" type="button" data-ingrediente="banana">banana</button></li>
-          <li><button class="chip" type="button" data-ingrediente="onion">onion</button></li>
         </ul>
       </div>
     </section>
@@ -104,7 +105,12 @@
           <p class="estado__icono" aria-hidden="true">🍽️</p>
           <p class="estado__titulo">Sin resultados</p>
           <p class="estado__texto" id="mensajeVacio"></p>
-          <p class="estado__pista">Prueba con otro ingrediente, por ejemplo <em>chicken</em>, <em>beef</em> o <em>egg</em>.</p>
+          <p class="estado__pista">Prueba con otro ingrediente, en español o en inglés: por ejemplo
+            <em>pollo</em>, <em>carne de res</em>, <em>arroz</em> o <em>cheese</em>.</p>
+          <div class="sugerencias sugerencias--vacio" id="sugerenciasVacio" hidden>
+            <span class="sugerencias__titulo">¿Quizás quisiste decir?</span>
+            <ul class="chips" id="chipsSugeridosVacio"></ul>
+          </div>
         </div>
 
         <!-- Estado: error -->
@@ -161,7 +167,6 @@
   <footer class="pie">
     <div class="contenedor">
       <p><strong>Meal Planner</strong> · Ejercicio integrador 4</p>
-      <p>Integrantes: Osorio Blancas José Carlos (100%) · Marcelo Valer Alessandro Percy (100%)</p>
       <p>Datos provistos por <a href="https://www.themealdb.com/api.php" target="_blank" rel="noopener noreferrer">TheMealDB</a> (API pública, sin autenticación).</p>
     </div>
   </footer>

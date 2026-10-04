@@ -39,6 +39,7 @@
   var recetaModal = null;     // receta abierta en la ventana de detalle
   var focoPrevio = null;      // elemento con el foco antes de abrir el modal
   var ultimoIngrediente = ''; // último término buscado (para el botón Reintentar)
+  var ultimaConsulta = null;  // {original, consulta, estrategia} de la última búsqueda
   var tokenBusqueda = 0;      // evita que una respuesta vieja pise a una nueva
   var tokenDetalle = 0;
   var temporizadorToast = null;
@@ -102,7 +103,7 @@
       var encontrado = resultados.length;
       els.contextoResultados.hidden = false;
       els.contextoResultados.textContent =
-        'Resultados para «' + ultimoIngrediente + '» — ' + encontrado +
+        describirContexto() + ' — ' + encontrado +
         (encontrado === 1 ? ' receta encontrada.' : ' recetas encontradas. Haz clic en una para seleccionarla.');
     } else {
       els.contextoResultados.hidden = true;
@@ -110,12 +111,55 @@
     }
   }
 
+  /**
+   * Describe la búsqueda realizada, indicando si el término tuvo que ser
+   * traducido al inglés y con qué endpoint se hallaron las recetas.
+   * @returns {string}
+   */
+  function describirContexto() {
+    if (!ultimaConsulta) {
+      return 'Resultados para «' + ultimoIngrediente + '»';
+    }
+    var base = 'Resultados para «' + ultimaConsulta.original + '»';
+    if (ultimaConsulta.consulta &&
+        ultimaConsulta.consulta.toLowerCase() !== ultimaConsulta.original.toLowerCase()) {
+      base += ' → «' + ultimaConsulta.consulta + '»';
+    }
+    return base + (ultimaConsulta.estrategia === 'nombre'
+      ? ' (encontradas por nombre de receta)'
+      : ' (buscado por ingrediente)');
+  }
+
+  /**
+   * Dibuja los chips de sugerencias de una búsqueda sin resultados.
+   * @param {string[]} sugerencias
+   */
+  function pintarSugerencias(sugerencias) {
+    els.chipsSugeridosVacio.replaceChildren();
+
+    if (!sugerencias || sugerencias.length === 0) {
+      els.sugerenciasVacio.hidden = true;
+      return;
+    }
+
+    sugerencias.forEach(function (nombre) {
+      var item = crear('li');
+      var chip = crear('button', 'chip', nombre);
+      chip.type = 'button';
+      chip.setAttribute('data-ingrediente', nombre);
+      item.appendChild(chip);
+      els.chipsSugeridosVacio.appendChild(item);
+    });
+
+    els.sugerenciasVacio.hidden = false;
+  }
+
   /* =====================================================================
      2. Búsqueda (RF01, RF02, RF03)
      ===================================================================== */
 
   /**
-   * Ejecuta la búsqueda de recetas por ingrediente.
+   * Ejecuta la búsqueda de recetas por ingrediente (en español o en inglés).
    * Encadena una promesa (fetch) con los estados de carga y los resultados.
    */
   function buscar(ingrediente) {
@@ -133,16 +177,22 @@
     var miToken = ++tokenBusqueda;
 
     resultados = [];
+    ultimaConsulta = null;
     limpiarSeleccion();
     pintarEstado('cargando');
     renderResultados();
     els.btnBuscar.disabled = true;
 
-    return MealAPI.buscarPorIngrediente(limpio)
-      .then(function (recetas) {
+    return MealAPI.buscarRecetas(limpio)
+      .then(function (respuesta) {
         if (miToken !== tokenBusqueda) { return; }   // respuesta obsoleta
-        resultados = recetas;
-        if (recetas.length > 0) {
+        resultados = respuesta.recetas;
+        ultimaConsulta = {
+          original: respuesta.original,
+          consulta: respuesta.consulta,
+          estrategia: respuesta.estrategia
+        };
+        if (respuesta.recetas.length > 0) {
           pintarEstado('resultados');
           renderResultados();
         } else {
@@ -155,7 +205,9 @@
         renderResultados();
         if (error && error.codigo === 'SIN_RESULTADOS') {
           pintarEstado('vacio', error.message);
+          pintarSugerencias(error.sugerencias);
         } else {
+          pintarSugerencias([]);
           pintarEstado('error', error && error.message
             ? error.message
             : 'Ocurrió un error inesperado al consultar la API.');
@@ -630,6 +682,8 @@
     els.estados = doc.getElementById('estados');
     els.mensajeVacio = doc.getElementById('mensajeVacio');
     els.mensajeError = doc.getElementById('mensajeError');
+    els.sugerenciasVacio = doc.getElementById('sugerenciasVacio');
+    els.chipsSugeridosVacio = doc.getElementById('chipsSugeridosVacio');
     els.contextoResultados = doc.getElementById('contextoResultados');
     els.gridResultados = doc.getElementById('gridResultados');
     els.btnReintentar = doc.getElementById('btnReintentar');
@@ -657,6 +711,7 @@
     els.formBusqueda.addEventListener('submit', alEnviarBusqueda);
     els.inputIngrediente.addEventListener('input', alEscribirIngrediente);
     els.chipsSugeridos.addEventListener('click', alClicEnChip);
+    els.chipsSugeridosVacio.addEventListener('click', alClicEnChip);
     els.btnReintentar.addEventListener('click', function () { return buscar(ultimoIngrediente); });
 
     // Callbacks: resultados (delegación de eventos)

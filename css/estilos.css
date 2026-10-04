@@ -8,61 +8,62 @@
    1. Variables de diseño (custom properties)
    -------------------------------------------------------------------------- */
 :root {
-  --fondo: #fdf6ee;
-  --fondo-alt: #f7ece0;
+  /* Base: página y superficies blancas */
+  --fondo: #ffffff;
+  --fondo-alt: #fff7ed;
   --superficie: #ffffff;
   --superficie-2: #fffaf4;
   --tinta: #2d1f18;
   --tinta-suave: #6b574b;
   --tinta-tenue: #9c887c;
-  --borde: #ecdbca;
-  --borde-fuerte: #dcc4ad;
+  --borde: #f0e1d3;
+  --borde-fuerte: #e3cdb6;
 
-  --primario: #e2571f;
-  --primario-oscuro: #c24311;
-  --primario-suave: #fdece2;
-  --exito: #2f8f4e;
-  --exito-suave: #e3f5e9;
+  /* Escala naranja: los tonos -700 en adelante se usan también como color de
+     texto sobre blanco (contraste >= 4.5:1 con letra normal). */
+  --naranja-100: #ffedd5;
+  --naranja-200: #fed7aa;
+  --naranja-600: #d9480b;
+  --naranja-700: #c2410c;
+  --naranja-800: #b8340a;
+  --naranja-900: #9c2a06;
+
+  /* Degradado de cabecera y pie: el stop más claro mantiene 4.7:1 con blanco. */
+  --degradado-naranja: linear-gradient(115deg, #d9480b 0%, #c2410c 45%, #9c2a06 100%);
+
+  --primario: #c2410c;
+  --primario-oscuro: #9c2a06;
+  --primario-suave: #ffedd5;
+  --exito: #15803d;
+  --exito-suave: #e7f6ec;
   --alerta: #b3261e;
   --alerta-suave: #fdecea;
-  --acento: #7a4bd1;
-  --acento-suave: #efe8fd;
+
+  /* Tonos de acento: uno por panel y uno por día del plan */
+  --tono-naranja: #c2410c;
+  --tono-ambar: #b45309;
+  --tono-verde: #15803d;
+  --tono-turquesa: #0f766e;
+  --tono-azul: #1d4ed8;
+  --tono-azul-cielo: #0369a1;
+  --acento: #7c3aed;
+  --acento-suave: #f1e9fe;
+  --tono-violeta: #7c3aed;
+  --tono-rosa: #be185d;
+
+  /* Se sobrescriben por panel y por día del plan */
+  --tono: var(--tono-naranja);
+  --tono-suave: var(--naranja-100);
 
   --radio: 14px;
   --radio-s: 9px;
   --radio-l: 22px;
-  --sombra-s: 0 1px 2px rgba(45, 31, 24, .07);
-  --sombra-m: 0 6px 18px rgba(45, 31, 24, .10);
-  --sombra-l: 0 18px 44px rgba(45, 31, 24, .20);
+  --sombra-s: 0 1px 2px rgba(124, 45, 18, .08);
+  --sombra-m: 0 6px 18px rgba(124, 45, 18, .12);
+  --sombra-l: 0 18px 44px rgba(124, 45, 18, .24);
 
   --fuente: "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
   --ancho: 1360px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fondo: #17110d;
-    --fondo-alt: #1e1712;
-    --superficie: #241c16;
-    --superficie-2: #2b211a;
-    --tinta: #f6ece3;
-    --tinta-suave: #cbb6a6;
-    --tinta-tenue: #9d897a;
-    --borde: #3a2c23;
-    --borde-fuerte: #4d3a2d;
-    --primario: #ff8a4c;
-    --primario-oscuro: #ff7030;
-    --primario-suave: #3a2418;
-    --exito: #62c983;
-    --exito-suave: #16301f;
-    --alerta: #ff8a80;
-    --alerta-suave: #3a1c1a;
-    --acento: #b39bf5;
-    --acento-suave: #2a2140;
-    --sombra-s: 0 1px 2px rgba(0, 0, 0, .45);
-    --sombra-m: 0 6px 18px rgba(0, 0, 0, .5);
-    --sombra-l: 0 18px 44px rgba(0, 0, 0, .65);
-  }
 }
 
 /* --------------------------------------------------------------------------
@@ -137,13 +138,15 @@ code {
    -------------------------------------------------------------------------- */
 .cabecera {
   background:
-    radial-gradient(1100px 320px at 12% -40%, rgba(226, 87, 31, .30), transparent 70%),
-    radial-gradient(900px 300px at 88% -30%, rgba(122, 75, 209, .26), transparent 70%),
-    var(--fondo-alt);
-  border-bottom: 1px solid var(--borde);
+    radial-gradient(760px 260px at 10% -25%, rgba(255, 255, 255, .22), transparent 70%),
+    radial-gradient(700px 240px at 90% -20%, rgba(249, 115, 22, .32), transparent 70%),
+    var(--degradado-naranja);
+  color: #fff;
+  text-align: center;
+  box-shadow: var(--sombra-m);
 }
 
-.cabecera__contenido { padding-block: clamp(1.6rem, 4vw, 2.6rem); }
+.cabecera__contenido { padding-block: clamp(1.8rem, 4vw, 3rem); }
 
 .cabecera__kicker {
   display: inline-block;
@@ -151,43 +154,63 @@ code {
   letter-spacing: .08em;
   text-transform: uppercase;
   font-weight: 700;
-  color: var(--primario-oscuro);
-  background: var(--primario-suave);
-  border: 1px solid var(--borde-fuerte);
+  color: #fff;
+  background: rgba(255, 255, 255, .16);
+  border: 1px solid rgba(255, 255, 255, .45);
   border-radius: 999px;
   padding: .28rem .7rem;
-  margin-bottom: .7rem;
+  margin-bottom: .8rem;
 }
 
 .cabecera__titulo {
   font-size: clamp(2.2rem, 6vw, 3.4rem);
   letter-spacing: -.02em;
   margin-bottom: .1rem;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(58, 22, 4, .25);
 }
 
 .cabecera__subtitulo {
   font-size: clamp(1rem, 2.4vw, 1.3rem);
-  color: var(--primario-oscuro);
+  color: rgba(255, 255, 255, .95);
   font-weight: 600;
-  margin-bottom: .5rem;
+  margin-bottom: .6rem;
 }
 
 .cabecera__descripcion {
   max-width: 62ch;
-  color: var(--tinta-suave);
-  margin: 0;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, .92);
+  text-shadow: 0 1px 2px rgba(58, 22, 4, .28);
 }
 
 /* --------------------------------------------------------------------------
    4. Paneles
    -------------------------------------------------------------------------- */
 .panel {
+  position: relative;
+  overflow: hidden;
   background: var(--superficie);
   border: 1px solid var(--borde);
   border-radius: var(--radio-l);
   box-shadow: var(--sombra-s);
   padding: clamp(1rem, 2.4vw, 1.6rem);
 }
+
+/* Franja de color del panel: evita que toda la página se vea del mismo tono */
+.panel::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 5px;
+  background: var(--tono);
+}
+
+.principal > .panel:nth-of-type(1) { --tono: var(--tono-naranja); --tono-suave: var(--naranja-100); }
+.principal > .panel:nth-of-type(2) { --tono: var(--tono-verde); --tono-suave: #e7f6ec; }
+.principal > .panel:nth-of-type(3) { --tono: var(--tono-violeta); --tono-suave: var(--acento-suave); }
+.principal > .panel:nth-of-type(4) { --tono: var(--tono-azul-cielo); --tono-suave: #e2f0fb; }
 
 .panel__encabezado {
   display: flex;
@@ -197,7 +220,7 @@ code {
   gap: .6rem 1rem;
   margin-bottom: 1rem;
   padding-bottom: .8rem;
-  border-bottom: 1px dashed var(--borde);
+  border-bottom: 1px solid var(--tono-suave);
 }
 
 .panel__titulo {
@@ -214,7 +237,7 @@ code {
   inline-size: 1.85rem;
   block-size: 1.85rem;
   border-radius: 50%;
-  background: var(--primario);
+  background: var(--tono);
   color: #fff;
   font-size: .95rem;
   flex: none;
@@ -238,8 +261,8 @@ code {
   font-size: .85rem;
   font-weight: 600;
   color: var(--tinta-suave);
-  background: var(--fondo-alt);
-  border: 1px solid var(--borde);
+  background: var(--tono-suave);
+  border: 1px solid transparent;
   border-radius: 999px;
   padding: .3rem .75rem;
 }
@@ -365,6 +388,11 @@ code {
   gap: .5rem;
 }
 
+.sugerencias--vacio {
+  margin-top: .9rem;
+  justify-content: center;
+}
+
 .sugerencias__titulo {
   font-size: .82rem;
   font-weight: 700;
@@ -387,7 +415,18 @@ code {
   padding: .3rem .8rem;
   transition: all .15s ease;
 }
-.chip:hover { background: var(--primario-suave); border-color: var(--primario); color: var(--primario-oscuro); }
+
+/* Los chips se van alternando de tono para que la fila no sea un bloque único */
+.chip:nth-child(4n+1) { background: var(--naranja-100); border-color: var(--naranja-200); color: var(--naranja-800); }
+.chip:nth-child(4n+2) { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+.chip:nth-child(4n+3) { background: #e7f6ec; border-color: #bbe7c8; color: #166534; }
+.chip:nth-child(4n+4) { background: #e2f0fb; border-color: #bcd9f2; color: #075985; }
+
+.chip:hover {
+  background: var(--primario);
+  border-color: var(--primario-oscuro);
+  color: #fff;
+}
 
 /* Formulario de asignación al día */
 .agregar {
@@ -629,16 +668,35 @@ code {
 }
 
 .dia {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background: var(--superficie-2);
   border: 1.5px solid var(--borde);
   border-radius: var(--radio);
   min-height: 190px;
-  overflow: hidden;
 }
 
-.dia.es-dia-activo { border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-suave); }
+/* Un tono por día: la semana se lee como una tira de colores */
+.dia::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 5px;
+  background: var(--tono-dia, var(--primario));
+}
+
+.dia[data-dia="Lunes"]     { --tono-dia: #c2410c; --tono-dia-suave: #ffedd5; --tono-dia-borde: #fed7aa; }
+.dia[data-dia="Martes"]    { --tono-dia: #b45309; --tono-dia-suave: #fef3c7; --tono-dia-borde: #fde68a; }
+.dia[data-dia="Miércoles"] { --tono-dia: #15803d; --tono-dia-suave: #e7f6ec; --tono-dia-borde: #bbe7c8; }
+.dia[data-dia="Jueves"]    { --tono-dia: #0f766e; --tono-dia-suave: #dcf5f1; --tono-dia-borde: #a7ded6; }
+.dia[data-dia="Viernes"]   { --tono-dia: #1d4ed8; --tono-dia-suave: #e3ecfd; --tono-dia-borde: #bfd3f8; }
+.dia[data-dia="Sábado"]    { --tono-dia: #7c3aed; --tono-dia-suave: #f1e9fe; --tono-dia-borde: #ddd0fb; }
+.dia[data-dia="Domingo"]   { --tono-dia: #be185d; --tono-dia-suave: #fde7f0; --tono-dia-borde: #f8c8dc; }
+
+.dia.es-dia-activo { border-color: var(--tono-dia); box-shadow: 0 0 0 3px var(--tono-dia-suave); }
 
 .dia__encabezado {
   display: flex;
@@ -646,8 +704,8 @@ code {
   justify-content: space-between;
   gap: .4rem;
   padding: .6rem .75rem;
-  background: var(--fondo-alt);
-  border-bottom: 1px solid var(--borde);
+  background: var(--tono-dia-suave, var(--fondo-alt));
+  border-bottom: 1px solid var(--tono-dia-borde, var(--borde));
 }
 
 .dia__nombre {
@@ -669,7 +727,11 @@ code {
   color: var(--tinta-suave);
 }
 
-.dia:not(.es-vacio) .dia__contador { background: var(--exito); border-color: var(--exito); color: #fff; }
+.dia:not(.es-vacio) .dia__contador {
+  background: var(--tono-dia, var(--exito));
+  border-color: var(--tono-dia, var(--exito));
+  color: #fff;
+}
 
 .dia__lista { padding: .5rem; display: flex; flex-direction: column; gap: .5rem; flex: 1; }
 
@@ -759,7 +821,7 @@ code {
   display: grid;
   place-items: center;
   padding: clamp(.6rem, 3vw, 2rem);
-  background: rgba(35, 22, 15, .58);
+  background: rgba(74, 33, 12, .58);
   backdrop-filter: blur(3px);
   animation: aparecer .15s ease-out;
 }
@@ -928,23 +990,41 @@ code {
 
 .toast[hidden] { display: none; }
 .toast.es-visible { transform: translate(-50%, 0); opacity: 1; }
-.toast[data-tipo="exito"] { background: #1f7a44; }
+.toast[data-tipo="exito"] { background: #166534; }
 .toast[data-tipo="alerta"] { background: #a3281f; }
-.toast[data-tipo="info"] { background: #5b3bb5; }
+.toast[data-tipo="info"] { background: #1d4ed8; }
 
 /* --------------------------------------------------------------------------
    12. Pie
    -------------------------------------------------------------------------- */
 .pie {
-  margin-top: 1.5rem;
-  padding-block: 1.6rem;
-  background: var(--fondo-alt);
-  border-top: 1px solid var(--borde);
-  font-size: .87rem;
-  color: var(--tinta-suave);
+  margin-top: 2rem;
+  padding-block: 2.2rem;
+  background:
+    radial-gradient(720px 220px at 6% -30%, rgba(255, 255, 255, .18), transparent 70%),
+    radial-gradient(720px 220px at 94% -30%, rgba(249, 115, 22, .30), transparent 70%),
+    var(--degradado-naranja);
+  color: #fff;
+  text-align: center;
+  font-size: .9rem;
 }
 
-.pie p { margin: 0 0 .3rem; }
+.pie .contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .4rem;
+}
+
+.pie p { margin: 0; }
+
+.pie a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pie a:hover { color: var(--naranja-100); }
 
 /* --------------------------------------------------------------------------
    13. Responsive y preferencias de movimiento
