@@ -253,7 +253,7 @@
 
       var pie = crear('div', 'receta__pie');
       pie.appendChild(crear('span', 'receta__id', 'ID ' + receta.idMeal));
-      var verDetalle = crear('button', 'boton--mini', 'Ver detalle');
+      var verDetalle = crear('button', 'boton boton--mini', 'Ver detalle');
       verDetalle.type = 'button';
       verDetalle.setAttribute('data-accion', 'detalle');
       verDetalle.setAttribute('data-id', receta.idMeal);

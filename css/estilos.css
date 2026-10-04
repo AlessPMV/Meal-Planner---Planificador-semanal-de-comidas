@@ -28,8 +28,23 @@
   --naranja-800: #b8340a;
   --naranja-900: #9c2a06;
 
-  /* Degradado de cabecera y pie: el stop más claro mantiene 4.7:1 con blanco. */
-  --degradado-naranja: linear-gradient(115deg, #d9480b 0%, #c2410c 45%, #9c2a06 100%);
+  /* Naranja de marca: #FCAE1E es la base del degradado de cabecera y pie.
+     Sobre ese ámbar el texto blanco sólo daba 1.87:1, así que la cabecera y el
+     pie usan texto marrón oscuro (>= 8:1) y el degradado se ve tal cual. */
+  --naranja-base: #FF8800;
+  --naranja-base-claro: #FFB74D;
+  --naranja-base-oscuro: #E65100;
+  --degradado-naranja: linear-gradient(
+    115deg,
+    var(--naranja-base-claro) 0%,
+    var(--naranja-base) 50%,
+    var(--naranja-base-oscuro) 100%
+  );
+
+  /* Texto sobre el degradado ámbar */
+  --sobre-naranja: #ffffff;
+  --sobre-naranja-suave: #4a3227;
+  --sobre-naranja-enlace: #7c2d12;
 
   --primario: #c2410c;
   --primario-oscuro: #9c2a06;
@@ -91,7 +106,7 @@ h1, h2, h3, h4 { margin: 0 0 .35rem; line-height: 1.2; font-weight: 700; }
 p { margin: 0 0 .6rem; }
 ul { margin: 0; padding: 0; list-style: none; }
 img { max-width: 100%; display: block; }
-a { color: var(--primario); }
+a { color: var(--sobre-naranja-suave); }
 code {
   font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
   font-size: .85em;
@@ -138,10 +153,9 @@ code {
    -------------------------------------------------------------------------- */
 .cabecera {
   background:
-    radial-gradient(760px 260px at 10% -25%, rgba(255, 255, 255, .22), transparent 70%),
-    radial-gradient(700px 240px at 90% -20%, rgba(249, 115, 22, .32), transparent 70%),
+    radial-gradient(760px 260px at 10% -25%, rgba(255, 255, 255, .28), transparent 70%),
     var(--degradado-naranja);
-  color: #fff;
+  color: var(--sobre-naranja);
   text-align: center;
   box-shadow: var(--sombra-m);
 }
@@ -154,9 +168,9 @@ code {
   letter-spacing: .08em;
   text-transform: uppercase;
   font-weight: 700;
-  color: #fff;
-  background: rgba(255, 255, 255, .16);
-  border: 1px solid rgba(255, 255, 255, .45);
+  color: var(--sobre-naranja);
+  background: rgba(255, 255, 255, .42);
+  border: 2px solid rgba(86, 23, 2, 0.35);
   border-radius: 999px;
   padding: .28rem .7rem;
   margin-bottom: .8rem;
@@ -166,13 +180,12 @@ code {
   font-size: clamp(2.2rem, 6vw, 3.4rem);
   letter-spacing: -.02em;
   margin-bottom: .1rem;
-  color: #fff;
-  text-shadow: 0 2px 12px rgba(58, 22, 4, .25);
+  color: var(--sobre-naranja);
 }
 
 .cabecera__subtitulo {
   font-size: clamp(1rem, 2.4vw, 1.3rem);
-  color: rgba(255, 255, 255, .95);
+  color: var(--sobre-naranja);
   font-weight: 600;
   margin-bottom: .6rem;
 }
@@ -180,8 +193,7 @@ code {
 .cabecera__descripcion {
   max-width: 62ch;
   margin: 0 auto;
-  color: rgba(255, 255, 255, .92);
-  text-shadow: 0 1px 2px rgba(58, 22, 4, .28);
+  color: var(--sobre-naranja);
 }
 
 /* --------------------------------------------------------------------------
@@ -371,13 +383,18 @@ code {
 .boton--peligro:hover:not(:disabled) { background: var(--alerta); color: #fff; }
 
 .boton--mini {
-  padding: .34rem .7rem;
+  padding: .36rem .75rem;
   font-size: .8rem;
+  font-weight: 600;
   background: var(--superficie);
-  border-color: var(--borde);
+  border-color: var(--borde-fuerte);
   color: var(--tinta-suave);
 }
-.boton--mini:hover:not(:disabled) { border-color: var(--primario); color: var(--primario-oscuro); }
+.boton--mini:hover:not(:disabled) {
+  background: var(--primario);
+  border-color: var(--primario-oscuro);
+  color: #fff;
+}
 
 /* Chips de ingredientes sugeridos */
 .sugerencias {
@@ -1001,10 +1018,9 @@ code {
   margin-top: 2rem;
   padding-block: 2.2rem;
   background:
-    radial-gradient(720px 220px at 6% -30%, rgba(255, 255, 255, .18), transparent 70%),
-    radial-gradient(720px 220px at 94% -30%, rgba(249, 115, 22, .30), transparent 70%),
+    radial-gradient(720px 220px at 6% -30%, rgba(255, 255, 255, .24), transparent 70%),
     var(--degradado-naranja);
-  color: #fff;
+  color: var(--sobre-naranja);
   text-align: center;
   font-size: .9rem;
 }
@@ -1019,12 +1035,12 @@ code {
 .pie p { margin: 0; }
 
 .pie a {
-  color: #fff;
+  color: var(--sobre-naranja-enlace);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-.pie a:hover { color: var(--naranja-100); }
+.pie a:hover { color: var(--tinta); }
 
 /* --------------------------------------------------------------------------
    13. Responsive y preferencias de movimiento
